@@ -5,6 +5,7 @@ import Contact from './Contact'
 import Work from './Work'
 import MagneticButton from './MagneticButton'
 import SplitText from './SplitText'
+import Logo from '../../assets/logo.svg'
 
 // Lazy load 3D scene for better initial page load
 const Scene = lazy(() => import('../canvas/Scene'))
@@ -39,15 +40,12 @@ export default function Overlay() {
                 <MagneticButton strength={0.2}>
                     <motion.a
                         href="#"
-                        className="flex items-center gap-3"
+                        className="flex items-center gap-2"
                         initial={{ opacity: 0, x: -30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                     >
-                        <div className="w-3 h-3 bg-accent rounded-full animate-pulse-glow" />
-                        <span className="font-header text-xl md:text-2xl font-bold tracking-[0.2em] text-light">
-                            PLETO
-                        </span>
+                        <img src={Logo} alt="PLETO" className="h-10 md:h-12 w-auto rounded-md" />
                     </motion.a>
                 </MagneticButton>
 

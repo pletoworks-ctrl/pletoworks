@@ -107,27 +107,8 @@ export default function Contact() {
             {/* Footer */}
             <footer className="p-4 md:p-6 lg:p-8 border-t border-white/10">
                 <div className="max-w-7xl mx-auto flex flex-col gap-6 md:gap-4">
-                    {/* Top row: Social Links and Back to Top */}
-                    <div className="flex flex-wrap justify-center md:justify-between items-center gap-4">
-                        {/* Social Links */}
-                        <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-                            {['IG', 'LI', 'TW', 'DR'].map((social, index) => {
-                                const fullNames = ['INSTAGRAM', 'LINKEDIN', 'TWITTER', 'DRIBBBLE']
-                                return (
-                                    <MagneticButton key={social} strength={0.2}>
-                                        <a
-                                            href="#"
-                                            className="font-body text-xs text-muted hover:text-accent transition-colors tracking-widest"
-                                        >
-                                            <span className="md:hidden">{social}</span>
-                                            <span className="hidden md:inline">{fullNames[index]}</span>
-                                        </a>
-                                    </MagneticButton>
-                                )
-                            })}
-                        </div>
-
-                        {/* Back to Top */}
+                    {/* Back to Top */}
+                    <div className="flex justify-center mb-4">
                         <MagneticButton strength={0.3}>
                             <a
                                 href="#home"
@@ -139,12 +120,31 @@ export default function Contact() {
                         </MagneticButton>
                     </div>
 
-                    {/* Bottom row: Copyright */}
+                    {/* Copyright */}
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs md:text-sm font-body text-muted text-center">
-                        <span>© 2024 PLETO</span>
+                        <span>© 2026 PLETO</span>
                         <span className="hidden sm:block w-1 h-1 bg-accent rounded-full" />
                         <span>ALL RIGHTS RESERVED</span>
                     </div>
+
+                    {/* Social Links - Coming Soon
+                    <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                        {['IG', 'LI', 'TW', 'DR'].map((social, index) => {
+                            const fullNames = ['INSTAGRAM', 'LINKEDIN', 'TWITTER', 'DRIBBBLE']
+                            return (
+                                <MagneticButton key={social} strength={0.2}>
+                                    <a
+                                        href="#"
+                                        className="font-body text-xs text-muted hover:text-accent transition-colors tracking-widest"
+                                    >
+                                        <span className="md:hidden">{social}</span>
+                                        <span className="hidden md:inline">{fullNames[index]}</span>
+                                    </a>
+                                </MagneticButton>
+                            )
+                        })}
+                    </div>
+                    */}
                 </div>
             </footer>
         </section>
