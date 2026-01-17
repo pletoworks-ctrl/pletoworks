@@ -10,6 +10,14 @@ function App() {
     const lenisRef = useRef(null)
 
     useEffect(() => {
+        // Disable Lenis on mobile - use native scroll for better performance
+        const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768
+
+        if (isMobile) {
+            lenisRef.current = null
+            return
+        }
+
         const lenis = new Lenis({
             duration: 1,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -17,7 +25,6 @@ function App() {
             gestureOrientation: 'vertical',
             smoothWheel: true,
             wheelMultiplier: 1,
-            touchMultiplier: 2,
         })
 
         lenisRef.current = lenis
@@ -30,7 +37,9 @@ function App() {
         requestAnimationFrame(raf)
 
         return () => {
-            lenis.destroy()
+            if (lenis) {
+                lenis.destroy()
+            }
             lenisRef.current = null
         }
     }, [])
