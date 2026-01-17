@@ -1,16 +1,120 @@
-# React + Vite
+# PLETO Works
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive portfolio website built with React, Three.js, and Framer Motion. Features interactive 3D elements, smooth animations, and a sleek dark theme.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** - UI framework
+- **Vite** - Build tool
+- **Three.js / React Three Fiber** - 3D graphics
+- **Framer Motion** - Animations
+- **Tailwind CSS v4** - Styling
+- **Lenis** - Smooth scrolling
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Interactive 3D glass cubes that follow cursor movement
+- Smooth scroll with Lenis
+- Custom animated cursor
+- Responsive design (mobile, tablet, desktop)
+- Lazy-loaded 3D scene for optimized performance
+- Section animations on scroll
+- Magnetic button effects
+- Marquee text animations
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/pleto.git
+
+# Navigate to project directory
+cd pleto
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── canvas/
+│   │   ├── Scene.jsx        # Three.js canvas setup
+│   │   └── HeroModel.jsx    # Interactive 3D cubes
+│   └── ui/
+│       ├── Overlay.jsx      # Main layout & hero section
+│       ├── Work.jsx         # Projects section
+│       ├── Services.jsx     # Services section
+│       ├── Contact.jsx      # Contact & footer
+│       ├── CustomCursor.jsx # Animated cursor
+│       ├── MagneticButton.jsx
+│       ├── Marquee.jsx
+│       ├── Preloader.jsx
+│       ├── ScrollProgress.jsx
+│       └── SplitText.jsx
+├── App.jsx                  # Root component
+├── main.jsx                 # Entry point
+└── index.css                # Global styles & Tailwind config
+```
+
+## Customization
+
+### Colors
+
+Edit the theme in `src/index.css`:
+
+```css
+@theme {
+    --color-dark: #0a0a0a;
+    --color-darker: #050505;
+    --color-light: #f0f0f0;
+    --color-accent: #c9ff00;
+    --color-muted: #666666;
+    --color-card: #141414;
+}
+```
+
+### Fonts
+
+The project uses:
+- **Syncopate** - Headers
+- **Syne** - Body text
+
+## Performance
+
+The build is optimized with code-splitting:
+- React core loaded first
+- Three.js lazy-loaded after initial render
+- Vendor chunks cached separately for faster repeat visits
+
+## License
+
+MIT
+
+## Contact
+
+hello@pletoworks.com
