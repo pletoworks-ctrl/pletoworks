@@ -1,6 +1,29 @@
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useState, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { MeshTransmissionMaterial } from '@react-three/drei'
+import { MeshTransmissionMaterial, useMatcapTexture } from '@react-three/drei'
+
+// Detect if GPU is available and performant
+function detectGPUCapability() {
+    const canvas = document.createElement('canvas')
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+
+    if (!gl) return false
+
+    // Check if using software renderer (CPU fallback)
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
+    if (debugInfo) {
+        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+        // Common software renderers that indicate no GPU
+        if (renderer.includes('SwiftShader') ||
+            renderer.includes('llvmpipe') ||
+            renderer.includes('Software') ||
+            renderer.includes('Microsoft Basic Render Driver')) {
+            return false
+        }
+    }
+
+    return true
+}
 
 // Simple cube for mobile - no expensive glass material
 function SimpleCube({ position, index, size = 0.4 }) {
@@ -34,6 +57,51 @@ function SimpleCube({ position, index, size = 0.4 }) {
                 roughness={0.3}
                 emissive="#c9ff00"
                 emissiveIntensity={0.3}
+            />
+        </mesh>
+    )
+}
+
+// MatCap cube for non-GPU desktop - prebaked glass look
+function MatCapCube({ position, index, size = 0.4 }) {
+    const meshRef = useRef()
+    const { pointer } = useThree()
+
+    // Use a glassy/reflective matcap texture
+    const [matcapTexture] = useMatcapTexture('3B3C3F_DAD9D5_929290_ABACA8', 256)
+
+    const randomOffset = useMemo(() => ({
+        rotSpeed: 0.3 + Math.random() * 0.4,
+        floatSpeed: 0.4 + Math.random() * 0.6,
+        floatAmp: 0.08 + Math.random() * 0.12,
+        delay: index * 0.3,
+    }), [index])
+
+    useFrame((state) => {
+        if (!meshRef.current) return
+
+        const time = state.clock.elapsedTime
+
+        meshRef.current.position.y = position[1] + Math.sin(time * randomOffset.floatSpeed + randomOffset.delay) * randomOffset.floatAmp
+
+        meshRef.current.rotation.x += 0.004 * randomOffset.rotSpeed
+        meshRef.current.rotation.y += 0.006 * randomOffset.rotSpeed
+
+        const targetX = position[0] + pointer.x * 0.4
+        const targetZ = position[2] + pointer.y * 0.25
+
+        meshRef.current.position.x += (targetX - meshRef.current.position.x) * 0.04
+        meshRef.current.position.z += (targetZ - meshRef.current.position.z) * 0.04
+    })
+
+    return (
+        <mesh ref={meshRef} position={position}>
+            <boxGeometry args={[size, size, size]} />
+            <meshMatcapMaterial
+                matcap={matcapTexture}
+                color="#c9ff00"
+                transparent
+                opacity={0.9}
             />
         </mesh>
     )
@@ -98,6 +166,12 @@ export default function HeroModel() {
     const isMobile = viewport.width < 5
     const cubeCount = isMobile ? 8 : 25
 
+    // Detect GPU capability once on mount
+    const [hasGPU, setHasGPU] = useState(true) // Default to true, detect on mount
+    useEffect(() => {
+        setHasGPU(detectGPUCapability())
+    }, [])
+
     const cubeData = useMemo(() => {
         const data = []
 
@@ -133,7 +207,8 @@ export default function HeroModel() {
         }
     })
 
-    const CubeComponent = isMobile ? SimpleCube : GlassCube
+    // Choose component based on device type and GPU capability
+    const CubeComponent = isMobile ? SimpleCube : (hasGPU ? GlassCube : MatCapCube)
 
     return (
         <group ref={groupRef}>
