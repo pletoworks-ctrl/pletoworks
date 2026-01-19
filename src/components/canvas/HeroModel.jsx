@@ -8,7 +8,7 @@ function detectGPUCapability() {
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
     if (!gl) {
-        console.log('[GPU Detection] No WebGL support - using low-performance mode')
+        // console.log('[GPU Detection] No WebGL support - using low-performance mode')
         return false
     }
 
@@ -18,15 +18,15 @@ function detectGPUCapability() {
         const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
         const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
 
-        console.log('[GPU Detection] Renderer:', renderer)
-        console.log('[GPU Detection] Vendor:', vendor)
+        // console.log('[GPU Detection] Renderer:', renderer)
+        // console.log('[GPU Detection] Vendor:', vendor)
 
         // Software renderers (no GPU)
         if (renderer.includes('SwiftShader') ||
             renderer.includes('llvmpipe') ||
             renderer.includes('Software') ||
             renderer.includes('Microsoft Basic Render Driver')) {
-            console.log('[GPU Detection] Software renderer detected - using low-performance mode')
+            // console.log('[GPU Detection] Software renderer detected - using low-performance mode')
             return false
         }
 
@@ -43,17 +43,17 @@ function detectGPUCapability() {
 
         for (const pattern of lowEndPatterns) {
             if (renderer.includes(pattern)) {
-                console.log('[GPU Detection] Integrated/low-end GPU detected - using low-performance mode')
+                // console.log('[GPU Detection] Integrated/low-end GPU detected - using low-performance mode')
                 return false
             }
         }
 
-        console.log('[GPU Detection] Dedicated GPU detected - using high-performance mode')
+        // console.log('[GPU Detection] Dedicated GPU detected - using high-performance mode')
         return true
     }
 
     // If we can't detect, assume low-performance to be safe
-    console.log('[GPU Detection] Could not detect GPU info - defaulting to low-performance mode')
+    // console.log('[GPU Detection] Could not detect GPU info - defaulting to low-performance mode')
     return false
 }
 
@@ -203,9 +203,9 @@ export default function HeroModel() {
     useEffect(() => {
         const gpuCapable = detectGPUCapability()
         setHasGPU(gpuCapable)
-        console.log('[HeroModel] Using', gpuCapable ? 'HIGH' : 'LOW', 'performance mode')
-        console.log('[HeroModel] Cube count:', isMobile ? 8 : 25)
-        console.log('[HeroModel] Material:', gpuCapable ? 'Glass Transmission' : 'MatCap')
+        // console.log('[HeroModel] Using', gpuCapable ? 'HIGH' : 'LOW', 'performance mode')
+        // console.log('[HeroModel] Cube count:', isMobile ? 8 : 25)
+        // console.log('[HeroModel] Material:', gpuCapable ? 'Glass Transmission' : 'MatCap')
     }, [])
 
     // Keep 25 cubes for desktop (both GPU and non-GPU)

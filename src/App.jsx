@@ -11,7 +11,7 @@ window.checkGPU = function() {
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
     if (!gl) {
-        console.log('❌ No WebGL support')
+        // console.log('❌ No WebGL support')
         return { hasGPU: false, reason: 'No WebGL support' }
     }
 
@@ -20,15 +20,15 @@ window.checkGPU = function() {
         const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
         const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
 
-        console.log('🎮 GPU Info:')
-        console.log('  Renderer:', renderer)
-        console.log('  Vendor:', vendor)
+        // console.log('🎮 GPU Info:')
+        // console.log('  Renderer:', renderer)
+        // console.log('  Vendor:', vendor)
 
         // Check for software renderers
         const softwareRenderers = ['SwiftShader', 'llvmpipe', 'Software', 'Microsoft Basic Render Driver']
         for (const sw of softwareRenderers) {
             if (renderer.includes(sw)) {
-                console.log('  ⚠️  Software renderer detected (no hardware GPU)')
+                // console.log('  ⚠️  Software renderer detected (no hardware GPU)')
                 return { hasGPU: false, renderer, vendor, reason: 'Software renderer' }
             }
         }
@@ -37,20 +37,20 @@ window.checkGPU = function() {
         const integratedPatterns = ['Intel HD Graphics', 'Intel(R) HD Graphics', 'Intel UHD Graphics', 'Intel(R) UHD Graphics', 'Intel Iris', 'Mesa DRI Intel', 'AMD Radeon(TM) Graphics']
         for (const pattern of integratedPatterns) {
             if (renderer.includes(pattern)) {
-                console.log('  ⚠️  Integrated/low-end GPU detected')
+                // console.log('  ⚠️  Integrated/low-end GPU detected')
                 return { hasGPU: false, renderer, vendor, reason: 'Integrated graphics' }
             }
         }
 
-        console.log('  ✅ Dedicated GPU detected')
+        // console.log('  ✅ Dedicated GPU detected')
         return { hasGPU: true, renderer, vendor, reason: 'Dedicated GPU' }
     }
 
-    console.log('  ❓ Could not detect GPU info')
+    // console.log('  ❓ Could not detect GPU info')
     return { hasGPU: false, reason: 'Detection failed' }
 }
 
-console.log('💡 Run window.checkGPU() in console to check your GPU')
+// console.log('💡 Run window.checkGPU() in console to check your GPU')
 
 function App() {
     const [isLoading, setIsLoading] = useState(true)
