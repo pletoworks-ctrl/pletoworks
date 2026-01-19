@@ -8,20 +8,52 @@ function detectGPUCapability() {
     const canvas = document.createElement('canvas')
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
-    if (!gl) return false
+    if (!gl) {
+        console.log('[GPU Detection - Scene] No WebGL support - using low-performance mode')
+        return false
+    }
 
     const debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
     if (debugInfo) {
         const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+        const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
+
+        console.log('[GPU Detection - Scene] Renderer:', renderer)
+        console.log('[GPU Detection - Scene] Vendor:', vendor)
+
+        // Software renderers (no GPU)
         if (renderer.includes('SwiftShader') ||
             renderer.includes('llvmpipe') ||
             renderer.includes('Software') ||
             renderer.includes('Microsoft Basic Render Driver')) {
+            console.log('[GPU Detection - Scene] Software renderer detected - using low-performance mode')
             return false
         }
+
+        // Integrated/low-end GPUs (treat as no GPU for heavy effects)
+        const lowEndPatterns = [
+            'Intel HD Graphics',
+            'Intel(R) HD Graphics',
+            'Intel UHD Graphics',
+            'Intel(R) UHD Graphics',
+            'Intel Iris',
+            'Mesa DRI Intel',
+            'AMD Radeon(TM) Graphics', // APU integrated graphics
+        ]
+
+        for (const pattern of lowEndPatterns) {
+            if (renderer.includes(pattern)) {
+                console.log('[GPU Detection - Scene] Integrated/low-end GPU detected - using low-performance mode')
+                return false
+            }
+        }
+
+        console.log('[GPU Detection - Scene] Dedicated GPU detected - using high-performance mode')
+        return true
     }
 
-    return true
+    console.log('[GPU Detection - Scene] Could not detect GPU info - defaulting to low-performance mode')
+    return false
 }
 
 export default function Scene() {
