@@ -94,17 +94,18 @@ function SimpleCube({ position, index, size = 0.4 }) {
     )
 }
 
-// MatCap cube for non-GPU desktop - prebaked glass look (simplified, no mouse tracking)
+// MatCap cube for non-GPU desktop - prebaked glass look with full interactions
 function MatCapCube({ position, index, size = 0.4 }) {
     const meshRef = useRef()
+    const { pointer } = useThree()
 
     // Use a glassy/reflective matcap texture
     const [matcapTexture] = useMatcapTexture('3B3C3F_DAD9D5_929290_ABACA8', 256)
 
     const randomOffset = useMemo(() => ({
-        rotSpeed: 0.15 + Math.random() * 0.2, // Slower rotation
-        floatSpeed: 0.3 + Math.random() * 0.4, // Slower float
-        floatAmp: 0.06 + Math.random() * 0.08,
+        rotSpeed: 0.3 + Math.random() * 0.4,
+        floatSpeed: 0.4 + Math.random() * 0.6,
+        floatAmp: 0.08 + Math.random() * 0.12,
         delay: index * 0.3,
     }), [index])
 
@@ -113,10 +114,17 @@ function MatCapCube({ position, index, size = 0.4 }) {
 
         const time = state.clock.elapsedTime
 
-        // Only simple floating and rotation - no mouse tracking
         meshRef.current.position.y = position[1] + Math.sin(time * randomOffset.floatSpeed + randomOffset.delay) * randomOffset.floatAmp
-        meshRef.current.rotation.x += 0.002 * randomOffset.rotSpeed
-        meshRef.current.rotation.y += 0.003 * randomOffset.rotSpeed
+
+        meshRef.current.rotation.x += 0.004 * randomOffset.rotSpeed
+        meshRef.current.rotation.y += 0.006 * randomOffset.rotSpeed
+
+        // Mouse tracking enabled
+        const targetX = position[0] + pointer.x * 0.4
+        const targetZ = position[2] + pointer.y * 0.25
+
+        meshRef.current.position.x += (targetX - meshRef.current.position.x) * 0.04
+        meshRef.current.position.z += (targetZ - meshRef.current.position.z) * 0.04
     })
 
     return (
@@ -196,11 +204,12 @@ export default function HeroModel() {
         const gpuCapable = detectGPUCapability()
         setHasGPU(gpuCapable)
         console.log('[HeroModel] Using', gpuCapable ? 'HIGH' : 'LOW', 'performance mode')
-        console.log('[HeroModel] Cube count:', gpuCapable ? 25 : 10)
+        console.log('[HeroModel] Cube count:', isMobile ? 8 : 25)
+        console.log('[HeroModel] Material:', gpuCapable ? 'Glass Transmission' : 'MatCap')
     }, [])
 
-    // Reduce cube count dramatically for non-GPU machines
-    const cubeCount = isMobile ? 8 : (hasGPU ? 25 : 10)
+    // Keep 25 cubes for desktop (both GPU and non-GPU)
+    const cubeCount = isMobile ? 8 : 25
 
     const cubeData = useMemo(() => {
         const data = []
@@ -231,8 +240,8 @@ export default function HeroModel() {
     }, [cubeCount, isMobile])
 
     useFrame((state) => {
-        // Only enable group rotation for GPU machines
-        if (groupRef.current && !isMobile && hasGPU) {
+        // Enable group rotation for all desktop machines
+        if (groupRef.current && !isMobile) {
             groupRef.current.rotation.y += (state.pointer.x * 0.1 - groupRef.current.rotation.y) * 0.02
             groupRef.current.rotation.x += (state.pointer.y * 0.05 - groupRef.current.rotation.x) * 0.02
         }
